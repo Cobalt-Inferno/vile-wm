@@ -15,18 +15,18 @@ typedef struct {
 
 const char term[] = "alacritty & disown";
 const char load[] = "dmenu_run &";
-static Display * dpy;
 int main(void)
 {
     short focusedOnWindow;
+    Display * dpy;
     XWindowAttributes attr;
     XButtonEvent start;
     XEvent ev;
     if(!(dpy = XOpenDisplay(0x0))) return 1;
+    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("v")), Mod1Mask,
+            DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("f")), Mod1Mask,
             DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
-    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("v")), Mod1Mask,
-        DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("t")), Mod1Mask,
             DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabButton(dpy, 1, Mod1Mask, DefaultRootWindow(dpy), True,
@@ -35,7 +35,6 @@ int main(void)
             ButtonPressMask|ButtonReleaseMask|PointerMotionMask, GrabModeAsync, GrabModeAsync, None, None);
 
     start.subwindow = None;
-    system("alacritty & disown");
     for(;;)
     {
         XNextEvent(dpy, &ev);
