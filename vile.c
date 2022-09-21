@@ -68,9 +68,7 @@ int main(void)
         }
         else if(ev.type == ButtonPress && ev.xbutton.subwindow != None)
         {
-            XGrabPointer(dpy, ev.xbutton.subwindow, True,
-            PointerMotionMask|ButtonReleaseMask, GrabModeAsync,
-            GrabModeAsync, None, None, CurrentTime);
+            XRaiseWindow(dpy, ev.xbutton.subwindow);
             XGetWindowAttributes(dpy, ev.xbutton.subwindow, &attr);
             start = ev.xbutton;
         }
@@ -88,6 +86,7 @@ int main(void)
         }
         else if(ev.type == ButtonRelease) {
             XUngrabPointer(dpy, CurrentTime);
+            start.subwindow = None;
         }
     }
 }
