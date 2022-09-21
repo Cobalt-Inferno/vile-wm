@@ -45,11 +45,11 @@ int main(void)
             system(term);
         }
 
-        if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("t")))
+        else if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("t")))
         {
             system(load);
         }
-        if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("v")))
+        else if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("v")))
             system("killall xinit");
 
         else if(ev.type == KeyPress && ev.xkey.subwindow != None) {
@@ -74,7 +74,7 @@ int main(void)
         }
         else if(ev.type == ButtonRelease)
             start.subwindow = None;
-            XUngrabPointer(dpy, CurrentTime);
+            //XUngrabPointer(dpy, CurrentTime);
     }
 }
 
