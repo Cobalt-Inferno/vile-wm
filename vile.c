@@ -32,6 +32,7 @@ int main(void)
     XWindowAttributes attr;
     XButtonEvent start;
     XEvent ev;
+    parse(key);
     if(!(dpy = XOpenDisplay(0x0))) return 1;
 
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("f")), Mod1Mask,
@@ -66,13 +67,13 @@ int main(void)
         }
         else if(ev.type == ButtonPress && ev.xbutton.subwindow != None)
         {
-            XRaiseWindow(dpy, ev.xbutton.subwindow);
+//            XRaiseWindow(dpy, ev.xbutton.subwindow);
             XGetWindowAttributes(dpy, ev.xbutton.subwindow, &attr);
             start = ev.xbutton;
         }
         else if(ev.type == MotionNotify && start.subwindow != None)
         {
-            XRaiseWindow(dpy, ev.xbutton.subwindow);
+ //           XRaiseWindow(dpy, ev.xbutton.subwindow);
             int xdiff = ev.xbutton.x_root - start.x_root;
             int ydiff = ev.xbutton.y_root - start.y_root;
             XMoveResizeWindow(dpy, start.subwindow,
