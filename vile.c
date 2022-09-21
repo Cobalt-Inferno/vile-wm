@@ -16,27 +16,17 @@ typedef struct {
 const char term[] = "alacritty & disown";
 const char load[] = "dmenu_run &";
 static Display * dpy;
-Keys key[2] = {
-    { XK_v, ControlMask|Mod1Mask },
-    { XK_k, ControlMask|Mod1Mask },
-};
-
-void parse(Keys *key) {
-    for(int i = 0; i < 2; i++) {
-        XGrabKey(dpy, XKeysymToKeycode(dpy, key[i].keysym), key[i].mod, DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
-    }
-}
 int main(void)
 {
     short focusedOnWindow;
     XWindowAttributes attr;
     XButtonEvent start;
     XEvent ev;
-    parse(key);
     if(!(dpy = XOpenDisplay(0x0))) return 1;
-
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("f")), Mod1Mask,
             DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("v")), Mod1Mask,
+        DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("t")), Mod1Mask,
             DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabButton(dpy, 1, Mod1Mask, DefaultRootWindow(dpy), True,
@@ -83,8 +73,8 @@ int main(void)
                 MAX(1, attr.height + (start.button==3 ? ydiff : 0)));
         }
         else if(ev.type == ButtonRelease)
-            XUngrabPointer(dpy, CurrentTime);
             start.subwindow = None;
+            XUngrabPointer(dpy, CurrentTime);
     }
 }
 
