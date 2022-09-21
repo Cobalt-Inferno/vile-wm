@@ -6,18 +6,26 @@
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
-struct Keys {
+typedef struct {
     KeySym keysym;
     unsigned int mod;
-};
+} Keys;
+
+
 
 const char term[] = "alacritty & disown";
 const char load[] = "dmenu_run &";
 static Display * dpy;
-struct Keys key[] = {
-    { XK_f, ControlMask|Mod1Mask },
-    { XK_t, ControlMask|Mod1Mask },
+Keys key[2] = {
+    { XK_v, ControlMask|Mod1Mask },
+    { XK_k, ControlMask|Mod1Mask },
 };
+
+void parse(Keys *key) {
+    for(int i = 0; i < 2; i++) {
+        XGrabKey(dpy, XKeysymToKeycode(dpy, key[i].keysym), key[i].mod, DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
+    }
+}
 int main(void)
 {
     short focusedOnWindow;
@@ -26,8 +34,6 @@ int main(void)
     XEvent ev;
     if(!(dpy = XOpenDisplay(0x0))) return 1;
 
-    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("F1")), Mod1Mask,
-            DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("f")), Mod1Mask,
             DefaultRootWindow(dpy), True, GrabModeAsync, GrabModeAsync);
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("t")), Mod1Mask,
@@ -47,20 +53,26 @@ int main(void)
         {
             system(term);
         }
+
         if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("t")))
         {
             system(load);
         }
+        if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("v")))
+            system("killall xinit");
+
         else if(ev.type == KeyPress && ev.xkey.subwindow != None) {
             XRaiseWindow(dpy, ev.xkey.subwindow);
         }
         else if(ev.type == ButtonPress && ev.xbutton.subwindow != None)
         {
+            XRaiseWindow(dpy, ev.xbutton.subwindow);
             XGetWindowAttributes(dpy, ev.xbutton.subwindow, &attr);
             start = ev.xbutton;
         }
         else if(ev.type == MotionNotify && start.subwindow != None)
         {
+            XRaiseWindow(dpy, ev.xbutton.subwindow);
             int xdiff = ev.xbutton.x_root - start.x_root;
             int ydiff = ev.xbutton.y_root - start.y_root;
             XMoveResizeWindow(dpy, start.subwindow,
