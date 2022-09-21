@@ -35,6 +35,7 @@ int main(void)
             ButtonPressMask|ButtonReleaseMask|PointerMotionMask, GrabModeAsync, GrabModeAsync, None, None);
 
     start.subwindow = None;
+    system("alacritty &");
     for(;;)
     {
         XNextEvent(dpy, &ev);
@@ -71,9 +72,10 @@ int main(void)
                 MAX(1, attr.width + (start.button==3 ? xdiff : 0)),
                 MAX(1, attr.height + (start.button==3 ? ydiff : 0)));
         }
-        else if(ev.type == ButtonRelease)
+        else if(ev.type == ButtonRelease) {
             start.subwindow = None;
-            //XUngrabPointer(dpy, CurrentTime);
+            XUngrabPointer(dpy, CurrentTime);
+        }
     }
 }
 
