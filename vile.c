@@ -26,7 +26,9 @@ int main(void)
     Window root;
     if(!(dpy = XOpenDisplay(0x0))) return 1;
     root = DefaultRootWindow(dpy);
-    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("v")), Mod1Mask,
+    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("u")), Mod1Mask,
+            root, True, GrabModeAsync, GrabModeAsync);
+    XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("c")), ShiftMask|Mod1Mask,
             root, True, GrabModeAsync, GrabModeAsync);
     XGrabKey(dpy, XKeysymToKeycode(dpy, XStringToKeysym("f")), Mod1Mask,
             root, True, GrabModeAsync, GrabModeAsync);
@@ -43,16 +45,20 @@ int main(void)
     {
         XNextEvent(dpy, &ev);
         focusedOnWindow = (ev.type == KeyPress && ev.xkey.subwindow != None);
+
+        if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("u")))
+        {
+            system("firefox &");
+        }
         if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("f")))
         {
             system(term);
         }
-
         else if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("t")))
         {
             system(load);
         }
-        else if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("v"))) {
+        else if (focusedOnWindow && ev.xkey.keycode == XKeysymToKeycode(dpy, XStringToKeysym("c"))) {
             memset(&buff, 0, sizeof(buff));
             buff.xclient.type = ClientMessage;
             buff.xclient.message_type = XInternAtom(dpy, "WM_PROTOCOLS",True);
